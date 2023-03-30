@@ -1,4 +1,6 @@
 ﻿
+using System.Xml.Linq;
+
 namespace Homework1
 {
     internal class Tensor
@@ -11,38 +13,58 @@ namespace Homework1
             _data = data;
             _type = data.GetType();
         }
-        public bool Compare(Tensor other, bool fullComparing = true)
+        void IterateArray(Array array, int[] indices, int dimension, ref string str)
         {
-            if (other == null || other._type != _type)
-                return false;
+            if (dimension == array.Rank)
+            {
+                // Access the element at the current indices
+                if (indices.Length > 1)
+                {
+                    Array element = (Array)array.GetValue(indices);
+                    if (array.GetValue(0).GetType().IsArray)
+                    {
+
+                        IterateArray(element, new int[indices.Rank], 0, ref str);
+                    }
+
+                }
+                else
+                {
+                    if (array.GetValue(0).GetType().IsArray)
+                    {
+                        Array element = (Array)array.GetValue(indices);
+                        IterateArray(element, new int[indices.Rank], 0, ref str);
+                    }
+                    else
+                        str += $"{array.GetValue(indices)}\t";
+                }
+
+
+            }
             else
+            {
+                for (int i = 0; i < array.GetLength(dimension); i++)
+                {
+                    indices[dimension] = i;
+                    IterateArray(array, indices, dimension + 1, ref str);
+                }
+            }
+        }
+        public override string? ToString()
+        {
+            string? str = null;
+            if (_data != null)
             {
                 if (_type.IsArray)
                 {
-                    if (_type.GetArrayRank() != other._type.GetArrayRank())
-                        return false;
-                    else
-                    {
-                        if(fullComparing)
-                        {
-                            Array arrayA = (Array)_data;
-                            Array arrayB = (Array)other._data;
-
-                            for (int i = 0; i < arrayA.Rank; i++)
-                            {
-                                if (arrayA.GetLength(i) != arrayB.GetLength(i))
-                                {
-                                    return false;
-                                }
-                            }
-                        }
-                        
-                        return true;
-                    }
+                    Array arr = (Array)_data;
+                    IterateArray(arr, new int[arr.Rank], 0, ref str);
                 }
-
-                return true;
+                else
+                    str = $"{Convert.ChangeType(_data, _type)}";
             }
+
+            return str;
         }
 
     }

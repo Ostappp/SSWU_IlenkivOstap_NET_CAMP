@@ -4,7 +4,7 @@
     {
         private int _size;
         private int[,,] _cube;
-
+        private ThroughLines lines;
         public Task3(int[,,] cube)
         {
             _size = cube.GetLength(0);
@@ -30,7 +30,7 @@
             }
             return _cube;
         }
-        public void FindThroughLinearHole()
+        public void FindThroughLinearHole_Print()
         {
             //vertical/horizontals perralels
             List<(int, int)> XZlines = new List<(int, int)>();//x,z - coords
@@ -167,7 +167,7 @@
                     for (int z = 0; z < _size; z++)
                     {
 
-                        if (((x - y) % _size + _size) % _size == _size-1 || y == 0)
+                        if (((x - y) % _size + _size) % _size == _size - 1 || y == 0)
                         {
                             XZDiagonal1.Add((((x - y) % _size + _size) % _size, y, z));
                             listCoord = (((x - y) % _size + _size) % _size, y, z);
@@ -229,43 +229,82 @@
                 }
             }
 
-            Console.WriteLine("\n``````````````\nTask 3:");
-            Console.WriteLine("\nOY parrallel through lines:");
-            for (int i = 0; i < XZlines.Count; i++)
-                Console.WriteLine($"\tstart point ({XZlines[i].Item1}, 0, {XZlines[i].Item2}); end point ({XZlines[i].Item1}, {_size - 1}, {XZlines[i].Item2})");
-
-            Console.WriteLine("\nOZ through lines:");
-            for (int i = 0; i < XYlines.Count; i++)
-                Console.WriteLine($"\tstart point ({XYlines[i].Item1}, {XYlines[i].Item2}, 0); end point ({XYlines[i].Item1}, {XYlines[i].Item2}, {_size - 1})");
-
-            Console.WriteLine("\nOX through lines:");
-            for (int i = 0; i < YZlines.Count; i++)
-                Console.WriteLine($"\tstart point (0, {YZlines[i].Item1}, {YZlines[i].Item2}); end point ({_size - 1}, {YZlines[i].Item1}, {YZlines[i].Item2})");
 
 
-            Console.WriteLine("\nXY panel diagonals parrallel through lines:");
-            for (int i = 0; i < XYDiagonal.Count; i++)
-                Console.WriteLine($"\tstart point ({XYDiagonal[i].Item1}, {XYDiagonal[i].Item2}, {XYDiagonal[i].Item3}); " +
-                    $"end point ({_size - 1 - XYDiagonal[i].Item2}, {_size - 1 - XYDiagonal[i].Item1}, {XYDiagonal[i].Item3})");
-            for (int i = 0; i < XYDiagonal1.Count; i++)
-                Console.WriteLine($"\tstart point ({XYDiagonal1[i].Item1}, {XYDiagonal1[i].Item2}, {XYDiagonal1[i].Item3}); " +
-                    $"end point ({XYDiagonal1[i].Item2}, {XYDiagonal1[i].Item1}, {XYDiagonal1[i].Item3})");
+            lines.XYlines = XYlines;
+            lines.XZlines = XZlines;
+            lines.YZlines = YZlines;
 
-            Console.WriteLine("\nXZ panel diagonals parrallel through lines:");
-            for (int i = 0; i < XZDiagonal.Count; i++)
-                Console.WriteLine($"\tstart point ({XZDiagonal[i].Item1}, {XZDiagonal[i].Item2}, {XZDiagonal[i].Item3}); " +
-                    $"end point ({_size - 1 - XZDiagonal[i].Item3}, {XZDiagonal[i].Item1}, {_size - 1 - XZDiagonal[i].Item1})");
-            for (int i = 0; i < XZDiagonal1.Count; i++)
-                Console.WriteLine($"\tstart point ({XZDiagonal1[i].Item1}, {XZDiagonal1[i].Item2}, {XZDiagonal1[i].Item3}); " +
-                    $"end point ({XZDiagonal1[i].Item3}, {XZDiagonal1[i].Item2}, {XZDiagonal1[i].Item1})");
+            lines.XYDiagonal = XYDiagonal;
+            lines.XYDiagonal1 = XYDiagonal1;
 
-            Console.WriteLine("\nYZ panel diagonals parrallel through lines:");
-            for (int i = 0; i < YZDiagonal.Count; i++)
-                Console.WriteLine($"\tstart point ({YZDiagonal[i].Item1}, {YZDiagonal[i].Item2}, {YZDiagonal[i].Item3}); " +
-                    $"end point ({YZDiagonal[i].Item1}, {_size - 1 - YZDiagonal[i].Item3}, {_size - 1 - YZDiagonal[i].Item2})");
-            for (int i = 0; i < YZDiagonal1.Count; i++)
-                Console.WriteLine($"\tstart point ({YZDiagonal1[i].Item1}, {YZDiagonal1[i].Item2}, {YZDiagonal1[i].Item3}); " +
-                    $"end point ({YZDiagonal1[i].Item1}, {YZDiagonal1[i].Item3}, {YZDiagonal1[i].Item2})");
+            lines.XZDiagonal = XZDiagonal;
+            lines.XZDiagonal1 = XZDiagonal1;
+
+            lines.YZDiagonal = YZDiagonal;
+            lines.YZDiagonal1 = YZDiagonal1;
+
+
+        }
+
+        public override string? ToString()
+        {
+            string? str = null;
+
+            str = "\nOY parrallel through lines:\n";
+            for (int i = 0; i < lines.XZlines.Count; i++)
+                str += $"\tstart point ({lines.XZlines[i].Item1}, 0, {lines.XZlines[i].Item2}); end point ({lines.XZlines[i].Item1}, {_size - 1}, {lines.XZlines[i].Item2})\n";
+
+            str += "\nOZ through lines:\n";
+            for (int i = 0; i < lines.XYlines.Count; i++)
+                str += $"\tstart point ({lines.XYlines[i].Item1}, {lines.XYlines[i].Item2}, 0); end point ({lines.XYlines[i].Item1}, {lines.XYlines[i].Item2}, {_size - 1})\n";
+
+            str += "\nOX through lines:\n";
+            for (int i = 0; i < lines.YZlines.Count; i++)
+                str += $"\tstart point (0, {lines.YZlines[i].Item1}, {lines.YZlines[i].Item2}); end point ({_size - 1}, {lines.YZlines[i].Item1}, {lines.YZlines[i].Item2})\n";
+
+
+            str += "\nXY panel diagonals parrallel through lines:\n";
+            for (int i = 0; i < lines.XYDiagonal.Count; i++)
+                str += $"\tstart point ({lines.XYDiagonal[i].Item1}, {lines.XYDiagonal[i].Item2}, {lines.XYDiagonal[i].Item3}); " +
+                    $"end point ({_size - 1 - lines.XYDiagonal[i].Item2}, {_size - 1 - lines.XYDiagonal[i].Item1}, {lines.XYDiagonal[i].Item3})\n";
+            for (int i = 0; i < lines.XYDiagonal1.Count; i++)
+                str += $"\tstart point ({lines.XYDiagonal1[i].Item1}, {lines.XYDiagonal1[i].Item2}, {lines.XYDiagonal1[i].Item3}); " +
+                    $"end point ({lines.XYDiagonal1[i].Item2}, {lines.XYDiagonal1[i].Item1}, {lines.XYDiagonal1[i].Item3})\n";
+
+            str += "\nXZ panel diagonals parrallel through lines:\n";
+            for (int i = 0; i < lines.XZDiagonal.Count; i++)
+                str += $"\tstart point ({lines.XZDiagonal[i].Item1}, {lines.XZDiagonal[i].Item2}, {lines.XZDiagonal[i].Item3}); " +
+                    $"end point ({_size - 1 - lines.XZDiagonal[i].Item3}, {lines.XZDiagonal[i].Item1}, {_size - 1 - lines.XZDiagonal[i].Item1})\n";
+            for (int i = 0; i < lines.XZDiagonal1.Count; i++)
+                str += $"\tstart point ({lines.XZDiagonal1[i].Item1}, {lines.XZDiagonal1[i].Item2}, {lines.XZDiagonal1[i].Item3}); " +
+                    $"end point ({lines.XZDiagonal1[i].Item3}, {lines.XZDiagonal1[i].Item2}, {lines.XZDiagonal1[i].Item1})\n";
+
+            str += "\nYZ panel diagonals parrallel through lines:\n";
+            for (int i = 0; i < lines.YZDiagonal.Count; i++)
+                str += $"\tstart point ({lines.YZDiagonal[i].Item1}, {lines.YZDiagonal[i].Item2}, {lines.YZDiagonal[i].Item3}); " +
+                    $"end point ({lines.YZDiagonal[i].Item1}, {_size - 1 - lines.YZDiagonal[i].Item3}, {_size - 1 - lines.YZDiagonal[i].Item2})\n";
+            for (int i = 0; i < lines.YZDiagonal1.Count; i++)
+                str += $"\tstart point ({lines.YZDiagonal1[i].Item1}, {lines.YZDiagonal1[i].Item2}, {lines.YZDiagonal1[i].Item3}); " +
+                    $"end point ({lines.YZDiagonal1[i].Item1}, {lines.YZDiagonal1[i].Item3}, {lines.YZDiagonal1[i].Item2})\n";
+            return str;
+        }
+
+        struct ThroughLines
+        {
+            public List<(int, int)> XZlines;
+            public List<(int, int)> XYlines;
+            public List<(int, int)> YZlines;
+
+            public List<(int, int, int)> XYDiagonal;
+            public List<(int, int, int)> XYDiagonal1;
+
+            public List<(int, int, int)> XZDiagonal;
+            public List<(int, int, int)> XZDiagonal1;
+
+            public List<(int, int, int)> YZDiagonal;
+            public List<(int, int, int)> YZDiagonal1;
         }
     }
+
 }
