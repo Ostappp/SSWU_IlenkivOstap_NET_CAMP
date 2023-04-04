@@ -19,7 +19,7 @@
             str.ForEach(s => { if (char.IsUpper(s[0])) { counter += 1; } });
             return counter;
         }
-        public void ReplaceWordsWithDoubleCharsBy(string usersText, string replacer)
+        public string ReplaceWordsWithDoubleCharsBy(string usersText, string replacer)
         {
             List<string> str = usersText.Split(' ').ToList();
             str = SeperateWordAndPunctual(str);
@@ -29,7 +29,7 @@
                     str[i] = replacer;
             }
 
-            usersText = string.Join(' ', str);
+            return string.Join(' ', str);
         }
         private bool HasDoubledChar(string str)
         {

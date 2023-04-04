@@ -17,7 +17,7 @@
             Console.WriteLine(task2.StartedOfUpperCharacter(usersText));
 
             usersText = "Some wordd And another Wordd";
-            task2.ReplaceWordsWithDoubleCharsBy(usersText,"replacer");
+            usersText = task2.ReplaceWordsWithDoubleCharsBy(usersText,"replacer");
             Console.WriteLine(usersText);
         }
     }
