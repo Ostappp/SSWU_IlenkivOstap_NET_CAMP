@@ -4,6 +4,7 @@
     {
         public int? SecondEntryOf(string usersText, string subString)
         {
+            Лишні перетворення. Потрібно повернути не номер слова, а номер літери в тексті, з якої починається підстрічка.
             List<string> str = usersText.Split(' ').ToList();
             str = SeperateWordAndPunctual(str);
             int index = str.FindIndex(str.FindIndex(s => s == subString) + 1, s => s == subString);
@@ -15,10 +16,11 @@
             List<string> str = usersText.Split(' ').ToList();
             str = SeperateWordAndPunctual(str);
             int counter = 0;
-
+// Лінк працює)
             str.ForEach(s => { if (char.IsUpper(s[0])) { counter += 1; } });
             return counter;
         }
+        //вам треба зберегти структуру тексту.  Якщо між словами було кілька пропусків, ви її порушили.
         public string ReplaceWordsWithDoubleCharsBy(string usersText, string replacer)
         {
             List<string> str = usersText.Split(' ').ToList();
