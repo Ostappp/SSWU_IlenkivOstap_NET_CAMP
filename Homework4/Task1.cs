@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using static System.Net.Mime.MediaTypeNames;
-
-namespace Homework4
+﻿namespace Homework4
 {
     internal class Task1
     {
