@@ -67,7 +67,6 @@
                 Console.WriteLine($"{new Task1(treeInGarden).FenceLength}\n\n");
             }
 
-
         }
     }
 }

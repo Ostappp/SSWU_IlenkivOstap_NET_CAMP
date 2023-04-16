@@ -1,8 +1,4 @@
-﻿using System.Data;
-using System.Linq;
-using System.Reflection;
-
-namespace Homework5
+﻿namespace Homework5
 {
     internal class Task1
     {
