@@ -18,5 +18,17 @@ namespace Homework5.Task2
             _sizeY = size.Item2;
             _sizeZ = size.Item3;
         }
+        public ObjectWithSize(string data)
+        {
+            string[] size = data.Split('|');
+            _sizeX = double.Parse(size[0]);
+            _sizeY = double.Parse(size[1]);
+            _sizeZ = double.Parse(size[2]);
+        }
+
+        public override string? ToString()
+        {
+            return $"sizeX: {_sizeX} | sizeY: {_sizeY} | sizeZ: {_sizeZ}";
+        }
     }
 }

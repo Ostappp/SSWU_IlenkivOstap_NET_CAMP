@@ -9,5 +9,14 @@
         {
             _name = name;
         }
+        public Item(string name, string args):base(args)
+        {
+            _name = name;
+        }
+
+        public override string? ToString()
+        {
+            return $"Name: {Name}. Params: {base.ToString()}";
+        }
     }
 }

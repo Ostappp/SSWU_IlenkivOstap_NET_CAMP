@@ -1,9 +1,13 @@
-﻿namespace Homework5
+﻿using Homework5.Task2;
+using System.Globalization;
+
+namespace Homework5
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
+            /*
             {//Task1
                 Task1 garden1 = new Task1(50);
                 Task1 garden2 = new Task1(75);
@@ -66,7 +70,17 @@
                 };
                 Console.WriteLine($"{new Task1(treeInGarden).FenceLength}\n\n");
             }
-
+            */
+            SuperUser user = new SuperUser();
+            Store store = new Store(user, "Metro", "Some Address");
+            Console.WriteLine(Store.MANUAL);
+            Console.ReadKey();
+            string managersCommands = File.ReadAllText("..\\..\\..\\Task2\\StoreConfig.txt");
+            //user.AddObjToManage(store);
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("uk-UA");
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            user.ManageObject(store, managersCommands, out string report);
+            Console.WriteLine($"\n\n{report}");
         }
     }
 }
