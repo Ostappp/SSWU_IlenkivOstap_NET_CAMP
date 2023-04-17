@@ -2,7 +2,9 @@
 {
     internal interface IManager
     {
+        public IManagable ManagedObj { get; }
         public string ManageObject(IManagable obj, string commandToExecute, out string report);
+        public string Manual { get; }
         
     }
 }

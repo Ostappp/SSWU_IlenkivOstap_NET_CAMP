@@ -8,25 +8,21 @@ namespace Homework5.Task2
     internal class Store : IManagable
     {
         public const string MANUAL =
-@"Before start you should add new department with command: add_dep <path> <department-name>.
-Remember tour department name.
+@"Add new department: add_dep <path> <department-name>
 
-To add item to department you must use next command: add_item <path-to-department>:<item-name> <cost> <sizeX>|<sizeY>|<sizeZ>.
+Add new item: add_item <path-to-department>:<item-name> <cost> <sizeX>|<sizeY>|<sizeZ>
             ~~~~~~~~~~~~~~~~~~~~~~~~~!!!WARNING!!!~~~~~~~~~~~~~~~~~~~~~~~~~
 The price must be inputed in following rules: [digits],[fractional-digits]
 
-To change department name input: change_dep_name <path> <new-name>
-Thsi command will also change path for each department inherited from the one you changed.
-
-To change price of item input following command: change_item_price <path-to-department>:<item-name> <new-price>.
-
-To remove department input: rm <path>
-To remove item input: rm <path-to-department>:<item-name>";
+Change department name: change_dep_name <path> <new-name>
+Change item price: change_item_price <path-to-department>:<item-name> <new-price>
+Remove department: rm <path>
+Remove item: rm <path-to-department>:<item-name>";
         string _name;
         string _address;
         DepartmentHolder _rootDepartment;
         public string GetFullName { get => $"{_address}, {_name}"; }
-
+        public string GetName { get => _name; }
         public string Manual => throw new NotImplementedException();
 
         public Store(IManager manager, string name, string address)
@@ -35,8 +31,15 @@ To remove item input: rm <path-to-department>:<item-name>";
             _name = name;
             _rootDepartment = new DepartmentHolder(_name, _name);
         }
-        public string ShowItems(ICostumer costumer, string departmentPath)
+        public List<string> GetPathIn(ICostumer costumer)
         {
+            FindDepartment(costumer.AttendedDepartment, out Department currentDepartment, out string report);
+            return currentDepartment.Departments.Departments.Select(x=>x.Name).ToList();
+        }
+        public string ShowItems(ICostumer costumer)
+        {
+            string departmentPath = costumer.AttendedDepartment;
+
             bool isDepartmentExist = FindDepartment(departmentPath, out Department seekedDepartment, out string message);
             StringBuilder sb = new StringBuilder();
             foreach (var item in seekedDepartment.Items)
@@ -111,15 +114,35 @@ To remove item input: rm <path-to-department>:<item-name>";
             costumer.PurshasedGods.RemoveAll(itemsToPack.Contains);
             costumer.PurshasedGods.AddRange(itemsToPack);
         }
-        public void SellItem(ICostumer costumer, string itemName, int count)
+        public bool SellItem(ICostumer costumer, string itemName, int count, out string report)
         {
             if(FindDepartment(costumer.AttendedDepartment, out Department dep, out string message))
             {
                 Item? item = dep.ContainsItem(itemName);
                 if(item != null)
                 {
-                    dep.SellItems(costumer, item, count, out message);
+                    if (dep.SellItems(costumer, item, count, out message))
+                    {
+                        report = $"Item [{item}] has been successfully sold.\n\t{message}";
+                        return true;
+                    }
+                    else
+                    {
+                        report = $"Error when solding item [{item}]\n\t{message}";
+                        return false;
+                    }
+                       
                 }
+                else
+                {
+                    report = $"Item [{item}] does not exist in [{costumer.AttendedDepartment}] department";
+                    return false;
+                }
+            }
+            else
+            {
+                report = $"Can not find path to [{costumer.AttendedDepartment}]";
+                return false;
             }
         }
         bool FindDepartment(string departmentPath, out Department seekedDepartment, out string report)

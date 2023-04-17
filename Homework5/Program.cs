@@ -73,6 +73,7 @@ namespace Homework5
             */
             SuperUser user = new SuperUser();
             Store store = new Store(user, "Metro", "Some Address");
+            user.AddStore(store);
             Console.WriteLine(Store.MANUAL);
             Console.ReadKey();
             string managersCommands = File.ReadAllText("..\\..\\..\\Task2\\StoreConfig.txt");
@@ -81,6 +82,11 @@ namespace Homework5
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             user.ManageObject(store, managersCommands, out string report);
             Console.WriteLine($"\n\n{report}");
+            CLI<SuperUser> cli = new CLI<SuperUser>(user);
+            cli.OpenCLI();
+
+
+
         }
     }
 }

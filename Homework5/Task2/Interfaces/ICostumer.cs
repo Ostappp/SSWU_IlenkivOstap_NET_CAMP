@@ -10,9 +10,23 @@ namespace Homework5.Task2.Interfaces
     {
         public List<PackedItems> PurshasedGods { get; set; }
         public string AttendedDepartment { get; }
-        public void MoveIn(string department);
-        public void MoveOut();
-        public void Buy(string itemName, int count);
+        public bool MoveIn(string department, out string report);
+        public void MoveOut(out string report);
+        public bool Buy(string itemName, int count, out string report);
+        public bool Leave(out string report);
+        public string ShowGods();
+        public string ShowWays();
+        public string ShowItemsToBuy();
+        public enum Actions
+        {
+            Buy,
+            MoveIn,
+            MoveOut,
+            Leave,
+            ShowItems,
+            GetWays,
+            SeeItemsToBuy,
+        }
 
     }
 }

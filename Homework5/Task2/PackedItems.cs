@@ -1,4 +1,6 @@
-﻿namespace Homework5.Task2
+﻿using System.Text;
+
+namespace Homework5.Task2
 {
     internal class PackedItems : ObjectWithSize
     {
@@ -16,6 +18,19 @@
         static (double, double, double) GetPackedItemsSize(List<ObjectWithSize> items)
         {
             return (items.MaxBy(i => i.Size.Item1).Size.Item1, items.MaxBy(i => i.Size.Item2).Size.Item2, items.Sum(i => i.Size.Item3));
+        }
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"Label: {_label}.\nBox size:\t{base.ToString()}");
+            sb.AppendLine($"Packed items [{_items.Count}]:");
+            foreach (var item in _items)
+            {
+                string itemDescription = item.ToString();
+                sb.AppendLine('\t' + itemDescription.Replace("\n", "\n\t").Replace("\t", "\t\t"));
+
+            }
+            return sb.ToString();
         }
     }
 }
