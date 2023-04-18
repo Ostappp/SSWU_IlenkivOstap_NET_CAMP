@@ -195,7 +195,11 @@ Show which mode is active: status";
             }
             if (action == ICustomer.Actions.GetWays.ToString().ToLower())
             {
-                Console.WriteLine(customer.ShowWays());
+                string ways = customer.ShowWays();
+                if (ways.Length > 0)
+                    Console.WriteLine(ways);
+                else
+                    Console.WriteLine("There are no other department to visit");
                 return;
             }
             if (action == ICustomer.Actions.MoveIn.ToString().ToLower())

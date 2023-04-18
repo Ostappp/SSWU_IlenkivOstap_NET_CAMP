@@ -286,8 +286,9 @@ Remove item: rm <path-to-department>:<item-name>";
             {
                 if (itemsForSale.ContainsKey(item))
                 {
+                    Item packedItem = new Item(item);
                     report = $"The product [{item.Name}] was sold in amount of {count} pieces. Total cost: {itemsForSale[item] * count:c2}.";
-                    PackedItems boxWithItems = new PackedItems(GetItemPath(item), Enumerable.Repeat(item as ObjectWithSize, count).ToList());
+                    PackedItems boxWithItems = new PackedItems(GetItemPath(packedItem), Enumerable.Repeat(packedItem as ObjectWithSize, count).ToList());
                     customer.PurshasedGods.Add(boxWithItems);
                     return true;
                 }
