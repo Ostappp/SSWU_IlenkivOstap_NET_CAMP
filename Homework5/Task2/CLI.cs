@@ -70,6 +70,7 @@ Show which mode is active: status";
             string inputCommand = "~~~~~~~~~~~~~~~CLI is activated~~~~~~~~~~~~~~~";
             Console.WriteLine("\n\n\n" + inputCommand.PadLeft((Console.WindowWidth / 2) + (inputCommand.Length / 2)) + "\n\n\n");
             Console.WriteLine(CLI_MANUAL + "\n\n\n");
+            Console.Write("# ");
             inputCommand = Console.ReadLine();
             while (inputCommand != command_Keyword[Commands.CloseCLI])
             {
@@ -141,10 +142,12 @@ Show which mode is active: status";
                             _mode = UserMode.Idle;
                             Console.WriteLine("[NOTE]\tCLI is working in idle mode");
                         }
+                        Console.Write("# ");
                     }
                     else
                     {
                         Console.WriteLine($"[INFO]\tCLI is working in [{_mode}] mode");
+                        Console.Write("# ");
                     }
 
                 }
@@ -163,6 +166,7 @@ Show which mode is active: status";
                     else
                     {
                         Console.WriteLine("Enter to any CLI mode to properly execute commands");
+                        Console.Write("# ");
                     }
                 }
 
