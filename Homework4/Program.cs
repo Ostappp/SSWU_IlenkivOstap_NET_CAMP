@@ -46,7 +46,7 @@ namespace Homework4
             Task3 t3 = new Task3(ReadData(TASK3_INPUT_PATH));
             WriteDataLines(TASK3_OUTPUT_PATH[0], t3.GetTotalReport());
             WriteDataLines(TASK3_OUTPUT_PATH[1], new string[] { t3.GetReportByApartment(30) });
-            Console.WriteLine(t3.GetSurnameWithHighestArrears(1.44));
+            Console.WriteLine($"Найбільший борг за електроенергію при ціні {1.44:c2} у {t3.GetSurnameWithHighestArrears(1.44)}");
             if (t3.GetAppartmentNumWithoutElectricityUse().Any())
                 Console.WriteLine($"Номер квартири де не використовувалась електроенергія: {t3.GetAppartmentNumWithoutElectricityUse()}.");
             else
