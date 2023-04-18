@@ -121,8 +121,13 @@ Remove item: rm <path-to-department>:<item-name>";
                 packed = new PackedItems(customer.AttendedDepartment/*string.Join('/', customer.AttendedDepartment.Split('/')[..^1])*/, itemsToPack);
             else
                 packed = new PackedItems(customer.AttendedDepartment, itemsToPack);
-            customer.PurshasedGods.RemoveAll(itemsToPack.Contains);
-            customer.PurshasedGods.Add(packed);
+            
+            if (packed != null)
+            {
+                customer.PurshasedGods.RemoveAll(itemsToPack.Contains);
+                customer.PurshasedGods.Add(packed);
+            }
+            
         }
         public bool SellItem(ICustomer customer, string itemName, int count, out string report)
         {
