@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Homework5.Task2.Interfaces
 {
-    internal interface ICostumer
+    internal interface ICustomer
     {
         public List<PackedItems> PurshasedGods { get; set; }
         public string AttendedDepartment { get; }

@@ -74,8 +74,6 @@ namespace Homework5
             SuperUser user = new SuperUser();
             Store store = new Store(user, "Metro", "Some Address");
             user.AddStore(store);
-            Console.WriteLine(Store.MANUAL);
-            Console.ReadKey();
             string managersCommands = File.ReadAllText("..\\..\\..\\Task2\\StoreConfig.txt");
             //user.AddObjToManage(store);
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("uk-UA");

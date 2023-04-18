@@ -8,8 +8,8 @@ namespace Homework5.Task2
         T _person;
         Permissions _personsPermisions;
         UserMode _mode = UserMode.Idle;
-        
-        const string MANUAL_COSTUMER = @"Buy item: Buy <item-name> <count>
+
+        const string MANUAL_CUSTOMER = @"Buy item: Buy <item-name> <count>
 [NOTE] <count> is integer type.
 
 Move in depertment deeper: MoveIn <path>
@@ -30,7 +30,7 @@ Show items you can buy in department: SeeItemsToBuy";
 Enter in manager's mode: manager
 [Note] to enter this mode you must have required permissions and to be in idle mode
 
-Enter costumer's mode: costumer
+Enter customer's mode: customer
 [Note] to enter this mode you must have required permissions and to be in idle mode
 
 Exit from current mode to Idle state: exit
@@ -40,7 +40,7 @@ Show which mode is active: status";
         {
             {Commands.CloseCLI,"close"},
             {Commands.EnterInManagerMode,"manager"},
-            {Commands.EnterInCostumerMode,"costumer"},
+            {Commands.EnterInCustomerMode,"customer"},
             {Commands.ExitToIdleMode,"exit"},
             {Commands.HasActiveMode,"status"},
         };
@@ -55,23 +55,25 @@ Show which mode is active: status";
         {
             if (person is IManager)
             {
-                if (person is ICostumer)
+                if (person is ICustomer)
                     _personsPermisions = Permissions.Both;
                 else
                     _personsPermisions = Permissions.Manager;
             }
-            else if (person is ICostumer)
-                _personsPermisions = Permissions.Costumer;
-            _personsPermisions = Permissions.None;
+            else if (person is ICustomer)
+                _personsPermisions = Permissions.Customer;
+            else
+                _personsPermisions = Permissions.None;
         }
         public void OpenCLI()
         {
             string inputCommand = "~~~~~~~~~~~~~~~CLI is activated~~~~~~~~~~~~~~~";
-            Console.WriteLine("\n\n\n" + inputCommand.PadRight((Console.WindowWidth / 2) + (inputCommand.Length / 2)) + "\n\n\n");
+            Console.WriteLine("\n\n\n" + inputCommand.PadLeft((Console.WindowWidth / 2) + (inputCommand.Length / 2)) + "\n\n\n");
             Console.WriteLine(CLI_MANUAL + "\n\n\n");
             inputCommand = Console.ReadLine();
             while (inputCommand != command_Keyword[Commands.CloseCLI])
             {
+
                 if (command_Keyword.ContainsValue(inputCommand))
                 {
                     if (inputCommand == command_Keyword[Commands.EnterInManagerMode])
@@ -89,8 +91,11 @@ Show which mode is active: status";
                             if (_personsPermisions == Permissions.Both || _personsPermisions == Permissions.Manager)
                             {
                                 _mode = UserMode.Manager;
-                                Console.WriteLine((_person as IManager).Manual+"\n");
+                                string info = "~~~~~~~~~~~~~~~MANUAL~~~~~~~~~~~~~~~\n";
+                                Console.WriteLine(info.PadLeft((Console.WindowWidth / 2) + (info.Length / 2)));
+                                Console.WriteLine("\n"+(_person as IManager).Manual + "\n\n\n");
                                 Console.WriteLine("[NOTE]\tCLI is working in manager mode");
+                                Console.Write("$ ");
                             }
                             else
                             {
@@ -98,11 +103,11 @@ Show which mode is active: status";
                             }
                         }
                     }
-                    else if (inputCommand == command_Keyword[Commands.EnterInCostumerMode])
+                    else if (inputCommand == command_Keyword[Commands.EnterInCustomerMode])
                     {
-                        if (_mode == UserMode.Costumer)
+                        if (_mode == UserMode.Customer)
                         {
-                            Console.WriteLine("[NOTE]\tCLI is already working in costumer mode");
+                            Console.WriteLine("[NOTE]\tCLI is already working in customer mode");
                         }
                         else if (_mode != UserMode.Idle)
                         {
@@ -110,15 +115,18 @@ Show which mode is active: status";
                         }
                         else
                         {
-                            if (_personsPermisions == Permissions.Both || _personsPermisions == Permissions.Costumer)
+                            if (_personsPermisions == Permissions.Both || _personsPermisions == Permissions.Customer)
                             {
-                                _mode = UserMode.Costumer;
-                                Console.WriteLine(MANUAL_COSTUMER + "\n");
-                                Console.WriteLine("[NOTE]\tCLI is working in costumer mode");
+                                _mode = UserMode.Customer;
+                                string info = "~~~~~~~~~~~~~~~MANUAL~~~~~~~~~~~~~~~\n";
+                                Console.WriteLine(info.PadLeft((Console.WindowWidth / 2) + (info.Length / 2)));
+                                Console.WriteLine("\n" + MANUAL_CUSTOMER + "\n\n\n");
+                                Console.WriteLine("[NOTE]\tCLI is working in customer mode");
+                                Console.Write((_person as ICustomer).AttendedDepartment + "> ");
                             }
                             else
                             {
-                                Console.WriteLine("You have not costumer's permissions");
+                                Console.WriteLine("You have not customer's permissions");
                             }
                         }
                     }
@@ -142,13 +150,15 @@ Show which mode is active: status";
                 }
                 else
                 {
-                    if (_mode == UserMode.Costumer)
+                    if (_mode == UserMode.Customer)
                     {
                         CustomerMode(inputCommand);
+                        Console.Write((_person as ICustomer).AttendedDepartment + "> ");
                     }
                     else if (_mode == UserMode.Manager)
                     {
                         ManagerMode(inputCommand);
+                        Console.Write("$ ");
                     }
                     else
                     {
@@ -163,52 +173,54 @@ Show which mode is active: status";
         void CloseCLI()
         {
             string message = "~~~~~~~~~~~~~~~CLI is deactivated~~~~~~~~~~~~~~~";
-            Console.WriteLine("\n\n\n" + message.PadRight((Console.WindowWidth / 2) + (message.Length / 2)) + "\n\n\n");
+            Console.WriteLine("\n\n\n" + message.PadLeft((Console.WindowWidth / 2) + (message.Length / 2)) + "\n\n\n");
         }
         void CustomerMode(string command)
         {
-            string action = command.Split(' ')[0];
-            string commandPart = command.Split(' ')[1];
+            string action = command.Split(' ')[0].ToLower();
+            string commandPart = string.Empty;
+            if (command.Split(' ').Length > 1)
+                commandPart = command.Split(' ', 2)[1];
             string report = string.Empty;
-            ICostumer costumer = _person as ICostumer;
-            
-            if (action == ICostumer.Actions.SeeItemsToBuy.ToString())
+            ICustomer customer = _person as ICustomer;
+
+            if (action == ICustomer.Actions.SeeItemsToBuy.ToString().ToLower())
             {
-                Console.WriteLine(costumer.ShowItemsToBuy());
+                Console.WriteLine(customer.ShowItemsToBuy());
                 return;
             }
-            if(action == ICostumer.Actions.GetWays.ToString())
+            if (action == ICustomer.Actions.GetWays.ToString().ToLower())
             {
-                Console.WriteLine(costumer.ShowWays());
+                Console.WriteLine(customer.ShowWays());
                 return;
             }
-            if(action == ICostumer.Actions.MoveIn.ToString())
+            if (action == ICustomer.Actions.MoveIn.ToString().ToLower())
             {
-                costumer.MoveIn(commandPart, out report);
+                customer.MoveIn(commandPart, out report);
                 Console.WriteLine(report);
                 return;
             }
-            if(action == ICostumer.Actions.MoveOut.ToString())
+            if (action == ICustomer.Actions.MoveOut.ToString().ToLower())
             {
-                costumer.MoveOut(out report);
+                customer.MoveOut(out report);
                 Console.WriteLine(report);
                 return;
             }
-            if(action == ICostumer.Actions.ShowItems.ToString())
+            if (action == ICustomer.Actions.ShowItems.ToString().ToLower())
             {
-                Console.WriteLine(costumer.ShowGods());
+                Console.WriteLine(customer.ShowGods());
                 return;
             }
-            if(action == ICostumer.Actions.Leave.ToString())
+            if (action == ICustomer.Actions.Leave.ToString().ToLower())
             {
-                costumer.Leave(out report);
+                customer.Leave(out report);
                 Console.WriteLine(report);
                 return;
             }
-            if(action == ICostumer.Actions.Buy.ToString())
+            if (action == ICustomer.Actions.Buy.ToString().ToLower())
             {
                 if (int.TryParse(commandPart.Split(' ')[1], out int count))
-                    costumer.Buy(commandPart.Split(' ')[0], count, out report);
+                    customer.Buy(commandPart.Split(' ')[0], count, out report);
                 else
                     report = $"Inavlid value is not integer: [{commandPart.Split(' ')[1]}]";
                 Console.WriteLine(report);
@@ -227,12 +239,12 @@ Show which mode is active: status";
         {
             None,
             Manager,
-            Costumer,
+            Customer,
             Both,
         }
         enum Commands
         {
-            EnterInCostumerMode,
+            EnterInCustomerMode,
             EnterInManagerMode,
             ExitToIdleMode,
             CloseCLI,
@@ -242,7 +254,7 @@ Show which mode is active: status";
         {
             Idle,
             Manager,
-            Costumer,
+            Customer,
         }
     }
 }

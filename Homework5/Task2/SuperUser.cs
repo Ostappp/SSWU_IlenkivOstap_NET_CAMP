@@ -4,14 +4,14 @@ using System.Text;
 
 namespace Homework5.Task2
 {
-    internal class SuperUser : Person, IManager, ICostumer
+    internal class SuperUser : Person, IManager, ICustomer
     {
         List<PackedItems> _purshasedItems;
         Store _currentStore;
         string _locaionInStore;
         public string Manual { get => _currentStore.Manual; }
         public List<PackedItems> PurshasedGods { get => _purshasedItems; set => _purshasedItems = value; }
-        public string AttendedDepartment { get => _locaionInStore == null ? "NONE" : _locaionInStore; }
+        public string AttendedDepartment { get => _locaionInStore == null ? "outside" : _locaionInStore; }
 
         public IManagable ManagedObj { get => _currentStore; }
         public SuperUser()
@@ -29,6 +29,7 @@ namespace Homework5.Task2
             if (_currentStore == null)
             {
                 _currentStore = store;
+                _locaionInStore = store.GetName;
                 return true;
             }
             return false;
@@ -46,6 +47,7 @@ namespace Homework5.Task2
             if (ways.Contains(department))
             {
                 report = $"You walked in [{department}] deparetment";
+                _locaionInStore = _locaionInStore + '/' + department;
                 return true;
             }
             report = $"[{department}] deparetment does not exist in current department";
@@ -55,8 +57,15 @@ namespace Homework5.Task2
         public void MoveOut(out string report)
         {
             _currentStore.PackInBox(this);
-            report = $"You are out of the [{_locaionInStore.Split('/')[^1]}] department";
-            _locaionInStore = string.Join('/', _locaionInStore.Split('/')[..^2]);
+            if (_locaionInStore.Contains('/'))
+            {
+                report = $"You have out of the [{_locaionInStore.Split('/')[^1]}] department";
+                _locaionInStore = string.Join('/', _locaionInStore.Split('/')[..^1]);
+            }
+            else
+            {
+                report = $"[{_locaionInStore.Split('/')[^1]}] is not depatment. Is is a store name. To leave store use proper command.";
+            }
 
         }
         public bool Buy(string itemName, int count, out string report)
@@ -67,8 +76,10 @@ namespace Homework5.Task2
         {
             if (AttendedDepartment.Split('/').Length == 1)
             {
+                _currentStore.PackInBox(this);
                 report = "You have successfully exited the store";
                 _currentStore = null;
+                _locaionInStore = string.Empty;
                 return true;
             }
             report = "To leave the store you must leave all its departments";
@@ -82,7 +93,7 @@ namespace Homework5.Task2
                 sb.AppendLine($"Items in property [{PurshasedGods.Count}]:");
                 foreach (var item in PurshasedGods)
                 {
-                    sb.Append($"\t{item}");
+                    sb.Append($"{("\n"+ item.ToString()).Replace("\n", "\n\t").Replace("\t", "\t\t")}");
                 }
             }
             else

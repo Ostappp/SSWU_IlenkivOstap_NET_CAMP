@@ -27,7 +27,7 @@ namespace Homework5.Task2
             foreach (var item in _items)
             {
                 string itemDescription = item.ToString();
-                sb.AppendLine('\t' + itemDescription.Replace("\n", "\n\t").Replace("\t", "\t\t"));
+                sb.AppendLine('\t' + itemDescription.Replace("\n", "\n\t"));
 
             }
             return sb.ToString();

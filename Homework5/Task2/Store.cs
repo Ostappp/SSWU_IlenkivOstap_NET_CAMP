@@ -2,19 +2,19 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Intrinsics.Arm;
 using System.Text;
+using System.Xml.Linq;
 
 namespace Homework5.Task2
 {
     internal class Store : IManagable
     {
-        public const string MANUAL =
+        const string MANUAL =
 @"Add new department: add_dep <path> <department-name>
 
 Add new item: add_item <path-to-department>:<item-name> <cost> <sizeX>|<sizeY>|<sizeZ>
             ~~~~~~~~~~~~~~~~~~~~~~~~~!!!WARNING!!!~~~~~~~~~~~~~~~~~~~~~~~~~
 The price must be inputed in following rules: [digits],[fractional-digits]
 
-Change department name: change_dep_name <path> <new-name>
 Change item price: change_item_price <path-to-department>:<item-name> <new-price>
 Remove department: rm <path>
 Remove item: rm <path-to-department>:<item-name>";
@@ -23,7 +23,7 @@ Remove item: rm <path-to-department>:<item-name>";
         DepartmentHolder _rootDepartment;
         public string GetFullName { get => $"{_address}, {_name}"; }
         public string GetName { get => _name; }
-        public string Manual => throw new NotImplementedException();
+        public string Manual { get => MANUAL; }
 
         public Store(IManager manager, string name, string address)
         {
@@ -31,45 +31,60 @@ Remove item: rm <path-to-department>:<item-name>";
             _name = name;
             _rootDepartment = new DepartmentHolder(_name, _name);
         }
-        public List<string> GetPathIn(ICostumer costumer)
+        public List<string> GetPathIn(ICustomer customer)
         {
-            FindDepartment(costumer.AttendedDepartment, out Department currentDepartment, out string report);
-            return currentDepartment.Departments.Departments.Select(x=>x.Name).ToList();
+            if (customer.AttendedDepartment == _rootDepartment.Name)
+            {
+                return _rootDepartment.Departments.Select(x => x.Name).ToList();
+            }
+            FindDepartment(customer.AttendedDepartment, out Department currentDepartment, out string report);
+            return currentDepartment.departmentsHolder.Departments.Select(x=>x.Name).ToList();
         }
-        public string ShowItems(ICostumer costumer)
+        public string ShowItems(ICustomer customer)
         {
-            string departmentPath = costumer.AttendedDepartment;
-
+            string departmentPath = customer.AttendedDepartment;
+            if(departmentPath == _rootDepartment.Name)
+            {
+                return "You must go into departments to see items.";
+            }
             bool isDepartmentExist = FindDepartment(departmentPath, out Department seekedDepartment, out string message);
             StringBuilder sb = new StringBuilder();
-            foreach (var item in seekedDepartment.Items)
+            if (seekedDepartment.Items.Count == 0)
             {
-                sb.AppendLine($"\t\t{item.Key.Name,-16}: {item.Value:c2}");
+                sb.AppendLine($"\t\tThe department [{seekedDepartment.Name}] is close for now.");
             }
-            if (seekedDepartment.IncludedDepartments.Count > 0)
+            else
             {
-                sb.AppendLine($"Also wisit other departments:");
-                foreach (var deparment in seekedDepartment.IncludedDepartments)
+                foreach (var item in seekedDepartment.Items)
                 {
-                    sb.Append($"\t{deparment}");
+                    sb.AppendLine($"\t\t{item.Key.Name,-16}: {item.Value:c2}");
+                }
+                if (seekedDepartment.IncludedDepartments.Count > 0)
+                {
+                    sb.AppendLine($"Also wisit other departments:");
+                    foreach (var deparment in seekedDepartment.IncludedDepartments)
+                    {
+                        sb.Append($"\t{deparment}");
+                    }
                 }
             }
+            
 
             if (isDepartmentExist)
                 return sb.ToString();
             else
                 return message;
         }
-        public string ShowDepartmentData(ICostumer costumer)
+        public string ShowDepartmentData(ICustomer customer)
         {
-            string departmentPath = costumer.AttendedDepartment;
+            string departmentPath = customer.AttendedDepartment;
             FindDepartment(departmentPath, out Department department, out string message);
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"Info about your location [{departmentPath}]:");
-            if (department.Departments.Departments.Count > 0)
+            if (department.departmentsHolder.Departments.Count > 0)
             {
                 sb.Append($"\tYou can visid folloving departments:");
-                foreach (var dep in department.Departments.Departments)
+                foreach (var dep in department.departmentsHolder.Departments)
                 {
                     sb.Append($"\t{dep.Name}");
                 }
@@ -88,40 +103,35 @@ Remove item: rm <path-to-department>:<item-name>";
 
             return sb.ToString();
         }
-        public void PackInBox(ICostumer costumer)
+        public void PackInBox(ICustomer customer)
         {
             //пакування відбувається при виході покупця із відділу і викликатиметься ним ззовні
-            if (costumer.PurshasedGods.Count == 0)
+            if (customer.PurshasedGods.Count == 0)
                 return;
 
-            List<PackedItems> itemsToPack = new List<PackedItems>();
+            List<ObjectWithSize> itemsToPack = new List<ObjectWithSize>();
             string tmp;
-            foreach (var item in costumer.PurshasedGods)
+            foreach (var item in customer.PurshasedGods)
             {
-                if (item.GetLabel.Contains(':'))
-                {
-                    tmp = item.GetLabel.Split(':')[0];
-                    if (tmp == costumer.AttendedDepartment)
-                        itemsToPack.Add(item);
-
-                }
-                else
-                {
-                    if (item.GetLabel == costumer.AttendedDepartment)
-                        itemsToPack.Add(item);
-                }
+                if (item.GetLabel.StartsWith(customer.AttendedDepartment))
+                    itemsToPack.Add(item);
             }
-            costumer.PurshasedGods.RemoveAll(itemsToPack.Contains);
-            costumer.PurshasedGods.AddRange(itemsToPack);
+            PackedItems packed;
+            if(customer.AttendedDepartment.Contains('/'))
+                packed = new PackedItems(customer.AttendedDepartment/*string.Join('/', customer.AttendedDepartment.Split('/')[..^1])*/, itemsToPack);
+            else
+                packed = new PackedItems(customer.AttendedDepartment, itemsToPack);
+            customer.PurshasedGods.RemoveAll(itemsToPack.Contains);
+            customer.PurshasedGods.Add(packed);
         }
-        public bool SellItem(ICostumer costumer, string itemName, int count, out string report)
+        public bool SellItem(ICustomer customer, string itemName, int count, out string report)
         {
-            if(FindDepartment(costumer.AttendedDepartment, out Department dep, out string message))
+            if(FindDepartment(customer.AttendedDepartment, out Department dep, out string message))
             {
                 Item? item = dep.ContainsItem(itemName);
                 if(item != null)
                 {
-                    if (dep.SellItems(costumer, item, count, out message))
+                    if (dep.SellItems(customer, item, count, out message))
                     {
                         report = $"Item [{item}] has been successfully sold.\n\t{message}";
                         return true;
@@ -135,13 +145,13 @@ Remove item: rm <path-to-department>:<item-name>";
                 }
                 else
                 {
-                    report = $"Item [{item}] does not exist in [{costumer.AttendedDepartment}] department";
+                    report = $"Item [{itemName}] does not exist in [{customer.AttendedDepartment}] department";
                     return false;
                 }
             }
             else
             {
-                report = $"Can not find path to [{costumer.AttendedDepartment}]";
+                report = $"Can not find path to [{customer.AttendedDepartment}]";
                 return false;
             }
         }
@@ -150,23 +160,29 @@ Remove item: rm <path-to-department>:<item-name>";
             DepartmentHolder holder = _rootDepartment;
             seekedDepartment = new Department();
             bool found = false;
-            string[] departmentName = departmentPath.Split('/');
+            
+            string[] departmentName = departmentPath.Split('/')[1..];
             for (int i = 0; i < departmentName.Length; i++)
             {
-                for (int j = 0; j < holder.Departments.Count; j++)
+                if (holder.ContainsDepartment(departmentName[i]))
                 {
-                    if (holder.Departments[j].Name == departmentName[i])
+                    if (i == departmentName.Length - 1)
                     {
-                        holder = holder.Departments[j].ParentDepartment;
-                        if (i == departmentName.Length - 1)
-                        {
-                            seekedDepartment = holder.Departments[j];
-                            found = true;
-                        }
-                        break;
+                        seekedDepartment = holder.Departments.Find(d => d.Name == departmentName[i]);
+                        found = true;
                     }
+                    holder = holder.Departments.Find(d => d.Name == departmentName[i]).departmentsHolder;
                 }
+
             }
+            //foreach (var name in departmentName)
+            //{
+            //    if (holder.ContainsDepartment(name))
+            //    {
+            //        holder = holder.Departments.Find(d=>d.Name == name).DepartmentsHolder;
+            //        found = true;
+            //    }
+            //}
             if (found)
             {
                 report = $"Department [{departmentPath}] exist";
@@ -222,36 +238,30 @@ Remove item: rm <path-to-department>:<item-name>";
             string name;
             Dictionary<Item, decimal> itemsForSale;
             DepartmentHolder parentDepartment;
-            DepartmentHolder departments;
+            public DepartmentHolder departmentsHolder;
             public string Name { get => name; set => name = value; }
-            public string DepartmentLocation { get => $"{parentDepartment.Path}/{Name}"; }
-            public DepartmentHolder ParentDepartment { get => parentDepartment; }
-            public Dictionary<Item, decimal> Items { get => itemsForSale; }
+            public string DepartmentLocation { get => $"{ParentDepartment.Path}/{Name}"; }
+            public DepartmentHolder ParentDepartment { get => parentDepartment; set => parentDepartment = value; }
+            public Dictionary<Item, decimal> Items { get => itemsForSale; set => itemsForSale = value; }
             public List<string> IncludedDepartments
             {
                 get
                 {
                     List<string> departmentsNames = new List<string>();
-                    foreach (var dep in departments.Departments)
+                    foreach (var dep in departmentsHolder.Departments)
                     {
                         departmentsNames.Add(dep.Name);
                     }
                     return departmentsNames;
                 }
             }
-            public DepartmentHolder Departments { get => departments; }
-            public Department(string name, Dictionary<Item, decimal> itemsForSale, DepartmentHolder parentDepartment)
-            {
-                this.name = name;
-                this.parentDepartment = parentDepartment;
-                this.itemsForSale = itemsForSale;
-                departments = new DepartmentHolder(name, $"{this.parentDepartment.Path}/{name}");
-            }
+            public DepartmentHolder DepartmentsHolder { get => departmentsHolder;  }
+            
             public Department(string name, DepartmentHolder parentDepartment)
             {
                 this.parentDepartment = parentDepartment;
                 this.name = name;
-                departments = new DepartmentHolder(name, $"{this.parentDepartment.Path}/{name}");
+                departmentsHolder = new DepartmentHolder(name, $"{this.parentDepartment.Path}/{name}");
                 itemsForSale = new Dictionary<Item, decimal>();
             }
             public Item? ContainsItem(string itemName)
@@ -263,37 +273,17 @@ Remove item: rm <path-to-department>:<item-name>";
                 }
                 return null;
             }
-            public bool ChangeName(string newName, out Department dep, out string report)
-            {
-                if (departments.Departments.Any(d => d.Name == newName))
-                {
-                    report = $"Department {newName} already exist";
-                    dep = this;
-                    return false;
-                }
-
-                Name = newName;
-                departments.Name = newName;
-                departments.RefreshPath();
-                dep = this;
-                report = $"Department name successfully changet from {Name} to {newName}.";
-                return true;
-            }
-            public void RefreshPath()
-            {
-                departments.RefreshPath();
-            }
             public bool AddDepartment(Department newDep, out string report)
             {
-                return departments.AddDepartment(newDep, out report);
+                return departmentsHolder.AddDepartment(newDep, out report);
             }
-            public bool SellItems(ICostumer costumer,Item item, int count, out string report)
+            public bool SellItems(ICustomer customer,Item item, int count, out string report)
             {
                 if (itemsForSale.ContainsKey(item))
                 {
                     report = $"The product [{item.Name}] was sold in amount of {count} pieces. Total cost: {itemsForSale[item] * count:c2}.";
                     PackedItems boxWithItems = new PackedItems(GetItemPath(item), Enumerable.Repeat(item as ObjectWithSize, count).ToList());
-                    costumer.PurshasedGods.Add(boxWithItems);
+                    customer.PurshasedGods.Add(boxWithItems);
                     return true;
                 }
                 report = $"The product [{item.Name}] was sold in amount of {count} pieces. Total cost: {itemsForSale[item] * count:c2}.";
@@ -301,7 +291,7 @@ Remove item: rm <path-to-department>:<item-name>";
                 return false;
             }
 
-            public string GetItemPath(Item item) => $"{DepartmentLocation}:{item.Name}";
+            public string GetItemPath(Item item) => $"{departmentsHolder.Path}:{item.Name}";
 
             public bool AddItem(Item item, decimal cost, out string report)
             {
@@ -353,37 +343,21 @@ Remove item: rm <path-to-department>:<item-name>";
         }
         struct DepartmentHolder
         {
+            
             string name;
             string path;
             List<Department> departments;
-
-            public string Path { get => path; }
-            public string Name { get => name; set => name = value; }
+            public string Path { get => path;  }
+            public string Name { get => name;  }
             public List<Department> Departments { get => departments; }
-
             public DepartmentHolder(string name, string path)
             {
                 this.path = path;
                 this.name = name;
                 departments = new List<Department>();
             }
-            public DepartmentHolder(string name, string path, Department department)
-            {
-                this.path = path;
-                this.name = name;
-                departments = new List<Department>() { department };
-            }
             public bool ContainsDepartment(string departmentName) => Departments.Any(d => d.Name == departmentName);
-            public void RefreshPath()
-            {
-                List<string> newPath = path.Split('/').ToList();
-                newPath[newPath.Count - 1] = name;
-                path = string.Join('/', newPath);
-                foreach (var dep in departments)
-                {
-                    dep.RefreshPath();
-                }
-            }
+            
             public bool AddDepartment(Department department, out string report)
             {
                 if (departments.Contains(department))
@@ -408,7 +382,6 @@ Remove item: rm <path-to-department>:<item-name>";
                 report = $"Department [{departmentName}] successfully deleted from [{Name}].";
                 return true;
             }
-
         }
         public bool Execute(IManager m, string command, out string report)
         {
@@ -433,10 +406,6 @@ Remove item: rm <path-to-department>:<item-name>";
                     else if (CommandStrings[ManagementCommands.AddItem] == commandSelector)
                     {
                         results[i] = AddItem(commands[i], out message);
-                    }
-                    else if (CommandStrings[ManagementCommands.ChangeDepartmentName] == commandSelector)
-                    {
-                        results[i] = ChangeDepartmentName(commands[i], out message);
                     }
                     else if (CommandStrings[ManagementCommands.ChangeItemCost] == commandSelector)
                     {
@@ -488,7 +457,7 @@ Remove item: rm <path-to-department>:<item-name>";
                 }
 
 
-                if (seekedDepartment.AddDepartment(new Department(args[1], seekedDepartment.Departments), out message))
+                if (seekedDepartment.AddDepartment(new Department(args[1], seekedDepartment.departmentsHolder), out message))
                 {
                     report = $"\t\tAdding new department to {args[0]}\n\t\t\t{message}";
                     return true;
@@ -523,36 +492,6 @@ Remove item: rm <path-to-department>:<item-name>";
                 return true;
             }
             report = $"\t\tError when adding new item to {args[0]}\n\t\t\t{message}";
-            return false;
-        }
-        bool ChangeDepartmentName(string command, out string report)
-        {
-            string[] args = command.Split(' ')[1..];
-            string name = args[1];
-            if (string.IsNullOrEmpty(name) || name.Any(character => !char.IsLetter(character)))
-            {
-                report = $"\t\tInvalid department new name [{name}]";
-                return false;
-            }
-            bool isDepartmentExist = FindDepartment(args[0], out Department department, out string message);
-            DepartmentHolder depHolder = department.ParentDepartment;
-            if (!isDepartmentExist)
-            {
-                report = $"\t\t{message}";
-                return false;
-            }
-            string cuurentName = args[0].Split('/').Last();
-            //department = depHolder.Departments.First(x => x.Name == cuurentName);
-            if (department.ChangeName(args[1], out department, out message))
-            {
-                FindDepartment(args[0], out Department tmp, out string tmpMessage);
-                depHolder = tmp.ParentDepartment;
-                tmp.ParentDepartment.RemoveDepartment(tmp.Name, out tmpMessage);
-                depHolder.AddDepartment(department, out tmpMessage);
-                report = $"\t\tChangeing department name to {args[1]}\n\t\t\t{message}";
-                return true;
-            }
-            report = $"\t\tError when changing deparment name\n\t\t\t{message}";
             return false;
         }
         bool ChangeItemCost(string command, out string report)
@@ -591,7 +530,7 @@ Remove item: rm <path-to-department>:<item-name>";
             List<string> departmentsPath = args[0].Split('/').ToList();
             bool isItemTarget = false;
             string itemName = departmentsPath.Last();
-            bool isDepartmentExist = false;
+            bool isDepartmentExist;
             Department department;
             string message;
             if (departmentsPath.Last().Contains(':'))
@@ -639,7 +578,6 @@ Remove item: rm <path-to-department>:<item-name>";
         {
             AddDepartment,
             AddItem,
-            ChangeDepartmentName,
             ChangeItemCost,
             Remove
         }
@@ -647,7 +585,6 @@ Remove item: rm <path-to-department>:<item-name>";
         {
             { ManagementCommands.AddDepartment, "add_dep" },
             { ManagementCommands.AddItem, "add_item" },
-            { ManagementCommands.ChangeDepartmentName, "change_dep_name" },
             { ManagementCommands.ChangeItemCost, "change_item_price" },
             { ManagementCommands.Remove, "rm" }
         };
