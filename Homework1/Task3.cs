@@ -1,7 +1,7 @@
 ﻿namespace Homework1
 {
     internal class Task3
-    {
+    {// У Вас є подібний код, який повторюється і який можна записати значно компактніше.
         private int _size;
         private int[,,] _cube;
         private ThroughLines lines;
