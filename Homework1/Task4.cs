@@ -1,6 +1,6 @@
 ﻿
 using System.Xml.Linq;
-
+// Молодець!
 namespace Homework1
 {
     internal class Tensor
