@@ -1,7 +1,7 @@
 ﻿using System.Text;
 
 namespace Homework4
-{
+{// Можна доповнювати при форматуванні незначущими 0 для вірівнювання знаків після коми для дійсних чисел.
     internal class Program
     {
         const string TASK2_TEXT_PATH = @"..\..\..\Task2_Text.txt";
