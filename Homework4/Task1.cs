@@ -1,7 +1,7 @@
 ﻿namespace Homework4
 {
     internal class Task1
-    {
+    {// Ці параметри краще робити зовнішніми. Наприклад, якщо потрібно розв'язати цю ж задачу але з квадратними дужками, а клас вже буде закритий, буде прикро...
         readonly private List<char> _sentenceEnd = new List<char> { '.', '!', '?' };
         readonly private List<char> _brackets = new List<char> { '(', ')' };
         readonly private List<string> _textList;
@@ -37,6 +37,7 @@
         {
             if (text.Length <= 2)
                 return new List<string> { text };
+            // Чому ділим лише по пропусках?
             List<string> words = text.Split(' ').ToList();
 
             List<string> strings = new List<string> { string.Empty };
@@ -76,7 +77,7 @@
                 }
 
             }
-
+//Ви кілька разів проходите текст. можна все зробити за 1 прохід.
             for (int i = 0; i < bracketIndex.Count; i += 2)
             {
                 List<(int, int)> localSentencesStart = GetSentencesStartIndexes(_textList.GetRange(bracketIndex[i].Item1, bracketIndex[i + 1].Item1 - bracketIndex[i].Item1 + 1),
