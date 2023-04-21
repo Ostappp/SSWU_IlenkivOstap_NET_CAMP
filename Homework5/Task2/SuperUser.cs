@@ -5,7 +5,7 @@ using System.Text;
 namespace Homework5.Task2
 {
     internal class SuperUser : Person, IManager, ICustomer
-    {
+    {//У цій задачі зробили більше, ніж просили) Молодець.
         List<PackedItems> _purshasedItems;
         Store _currentStore;
         string _locaionInStore;
