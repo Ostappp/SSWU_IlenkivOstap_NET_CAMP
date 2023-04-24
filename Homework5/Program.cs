@@ -1,6 +1,6 @@
 ﻿using Homework5.Task2;
 using System.Globalization;
-
+Ostap	Ilenkiv			90	15	20	95	85	95	100	110,5. Вітаю Вас. Ви в другому турі.
 namespace Homework5
 {
     internal class Program
