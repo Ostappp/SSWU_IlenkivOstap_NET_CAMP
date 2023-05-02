@@ -7,7 +7,7 @@ namespace Homework6
     {
         private int[,] _matrix;
         public Task1(int[,] matrix)
-        {
+        {//Черговий раз одна і та ж помилка!!! Я вже втомилась про неї писати і казати!!!
             _matrix = matrix;
         }
         public Task1(uint size = 6)
@@ -23,7 +23,7 @@ namespace Homework6
         }
 
         public IEnumerator GetEnumerator()
-        {
+        {// такий підхід може бути тільки для квадратних матриць. Тому слід здійснювати перевірку
             int sizeX = _matrix.GetLength(0);
             int sizeY = _matrix.GetLength(1);
             int index = 0;
@@ -35,7 +35,7 @@ namespace Homework6
                 yield return _matrix[x, y];
                 index++;
                 if (isUp)
-                {
+                {// Не оптимально на кожному елементі перепитувати, чи це не кінець лінії вітки.
                     if (y == sizeY - 1)
                     {
                         x++;
