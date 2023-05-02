@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 
 namespace Homework6
-{
+{// сумарний бал - 92
     internal class Program
     {
         static void Main(string[] args)
