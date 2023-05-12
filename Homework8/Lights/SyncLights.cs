@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Homework8.LightAbstraction;
 
 namespace Homework8.Lights
 {

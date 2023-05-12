@@ -1,4 +1,4 @@
-﻿namespace Homework8
+﻿namespace Homework8.LightAbstraction
 {
     public abstract class TrafficLights : ITrafficLight
     {
@@ -83,7 +83,7 @@
         }
         private void ChangeState()
         {
-            int currIndex = (((_timeForState.Keys.ToList().IndexOf(_state) - 1) % _timeForState.Count) + _timeForState.Count) % _timeForState.Count;
+            int currIndex = ((_timeForState.Keys.ToList().IndexOf(_state) - 1) % _timeForState.Count + _timeForState.Count) % _timeForState.Count;
             while (_timeToChangeState <= 0)
             {
                 currIndex = (currIndex + 1) % _timeForState.Count;

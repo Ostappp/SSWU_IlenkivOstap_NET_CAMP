@@ -1,4 +1,5 @@
-﻿using Homework8.Lights;
+﻿using Homework8.LightAbstraction;
+using Homework8.Lights;
 
 namespace Homework8
 {

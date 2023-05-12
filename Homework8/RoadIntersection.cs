@@ -1,5 +1,5 @@
-﻿using System.Text;
-using System.Timers;
+﻿using System.Timers;
+using Homework8.LightAbstraction;
 
 namespace Homework8
 {

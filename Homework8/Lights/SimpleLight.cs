@@ -1,4 +1,6 @@
-﻿namespace Homework8.Lights
+﻿using Homework8.LightAbstraction;
+
+namespace Homework8.Lights
 {
     internal class SimpleLight : TrafficLights
     {

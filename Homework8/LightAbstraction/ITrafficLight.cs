@@ -1,10 +1,10 @@
-﻿namespace Homework8
+﻿namespace Homework8.LightAbstraction
 {
     public interface ITrafficLight
     {
         public State CurrentState { get; }
         public List<Dir> Directions { get; }
-        
+
         public enum State
         {
             Off,
