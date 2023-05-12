@@ -106,7 +106,7 @@
 
         public override string? ToString()
         {
-            return $"Name: {_name}; directions: {string.Join(", ", _direction)}; state: {_state}";
+            return $"Name: {_name}; type: {GetType().Name}; directions: {string.Join(", ", _direction)}; state: {_state}";
         }
 
     }
