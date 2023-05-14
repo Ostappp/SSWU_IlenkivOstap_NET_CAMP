@@ -1,6 +1,6 @@
-﻿using Homework8.LightAbstraction;
+﻿using Homework8.Task1.LightAbstraction;
 
-namespace Homework8.Lights
+namespace Homework8.Task1.Lights
 {
     internal class LightExtension : TrafficLights
     {

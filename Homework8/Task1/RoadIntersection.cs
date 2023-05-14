@@ -1,7 +1,7 @@
 ﻿using System.Timers;
-using Homework8.LightAbstraction;
+using Homework8.Task1.LightAbstraction;
 
-namespace Homework8
+namespace Homework8.Task1
 {
     internal class RoadIntersection
     {

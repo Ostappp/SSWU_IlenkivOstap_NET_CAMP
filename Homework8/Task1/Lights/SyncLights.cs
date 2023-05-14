@@ -1,7 +1,7 @@
 ﻿using System.Text;
-using Homework8.LightAbstraction;
+using Homework8.Task1.LightAbstraction;
 
-namespace Homework8.Lights
+namespace Homework8.Task1.Lights
 {
     internal class SyncLights : TrafficLights
     {
@@ -9,7 +9,7 @@ namespace Homework8.Lights
         public SyncLights(string nameForLightComplex, IEnumerable<TrafficLights> lightsToSync, TrafficLights baseLight) : base(nameForLightComplex, baseLight)
         {
             if (!lightsToSync.Any())
-                throw new ArgumentException("List of traffic lights to syncronize can't be empty"); 
+                throw new ArgumentException("List of traffic lights to syncronize can't be empty");
             if (baseLight == null)
                 throw new ArgumentException("Base traffic light can't be null");
 
@@ -55,7 +55,7 @@ namespace Homework8.Lights
             StringBuilder builder = new StringBuilder();
             builder.AppendLine($"Group name: {Name}");
             foreach (var light in _syncLights)
-                builder.AppendLine("\t" + light.ToString().Replace("\n","\n\t"));
+                builder.AppendLine("\t" + light.ToString().Replace("\n", "\n\t"));
             return builder.ToString();
         }
 

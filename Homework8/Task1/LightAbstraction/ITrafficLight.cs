@@ -1,4 +1,4 @@
-﻿namespace Homework8.LightAbstraction
+﻿namespace Homework8.Task1.LightAbstraction
 {
     public interface ITrafficLight
     {

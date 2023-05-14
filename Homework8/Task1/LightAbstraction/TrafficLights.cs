@@ -1,4 +1,4 @@
-﻿namespace Homework8.LightAbstraction
+﻿namespace Homework8.Task1.LightAbstraction
 {
     public abstract class TrafficLights : ITrafficLight
     {
@@ -7,8 +7,8 @@
         protected ITrafficLight.State _state;
         public ITrafficLight.State CurrentState { get => _state; }
 
-        protected List<ITrafficLight.Dir> _direction;
-        public List<ITrafficLight.Dir> Directions { get => new List<ITrafficLight.Dir>(_direction); }
+        protected List<ITrafficLight.Dir> direction;
+        public List<ITrafficLight.Dir> Directions { get => new List<ITrafficLight.Dir>(direction); }
 
         public delegate void TrafficLightsDelegate();
         public event TrafficLightsDelegate ChangingState;
@@ -25,9 +25,9 @@
                 throw new ArgumentException("Traffic light must contain lights.");
 
             if (lightDirs == null || lightDirs.Contains(ITrafficLight.Dir.None))
-                _direction = new List<ITrafficLight.Dir> { ITrafficLight.Dir.None };
+                direction = new List<ITrafficLight.Dir> { ITrafficLight.Dir.None };
             else
-                _direction = new List<ITrafficLight.Dir>(lightDirs);
+                direction = new List<ITrafficLight.Dir>(lightDirs);
 
 
             _name = new(name);
@@ -41,17 +41,17 @@
                 throw new ArgumentException("Input thaffic light's name.");
             if (lightDirs == null)
             {
-                if (original._direction.Contains(ITrafficLight.Dir.None))
-                    _direction = new List<ITrafficLight.Dir> { ITrafficLight.Dir.None };
+                if (original.direction.Contains(ITrafficLight.Dir.None))
+                    direction = new List<ITrafficLight.Dir> { ITrafficLight.Dir.None };
                 else
-                    _direction = new List<ITrafficLight.Dir>(original._direction);
+                    direction = new List<ITrafficLight.Dir>(original.direction);
             }
             else
             {
                 if (lightDirs.Contains(ITrafficLight.Dir.None))
-                    _direction = new List<ITrafficLight.Dir> { ITrafficLight.Dir.None };
+                    direction = new List<ITrafficLight.Dir> { ITrafficLight.Dir.None };
                 else
-                    _direction = new List<ITrafficLight.Dir>(lightDirs);
+                    direction = new List<ITrafficLight.Dir>(lightDirs);
             }
 
 
@@ -70,9 +70,9 @@
 
         }
         public virtual void Disable() => _state = ITrafficLight.State.Off;
-        private void DecreaseTimer(float secondfs)
+        private void DecreaseTimer(float seconds)
         {
-            _timeToChangeState -= secondfs;
+            _timeToChangeState -= seconds;
             if (_timeToChangeState <= 0)
                 ChangeState();
         }
@@ -106,7 +106,7 @@
 
         public override string? ToString()
         {
-            return $"Name: {_name}; type: {GetType().Name}; directions: {string.Join(", ", _direction)}; state: {_state}";
+            return $"Name: {_name}; type: {GetType().Name}; directions: {string.Join(", ", direction)}; state: {_state}";
         }
 
     }

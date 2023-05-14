@@ -1,14 +1,14 @@
-﻿using Homework8.LightAbstraction;
+﻿using Homework8.Task1.LightAbstraction;
 
-namespace Homework8.Lights
+namespace Homework8.Task1.Lights
 {
     internal class SimpleLight : TrafficLights
     {
 
-        public SimpleLight(string name, float redTimeSeconds, float greenTimeSeconds, ITrafficLight.State firstState = ITrafficLight.State.Off, IEnumerable<ITrafficLight.Dir>? lightDirs = null, float yellowTimeSeconds = 3f) : base(name, GetStateAndTime(redTimeSeconds, greenTimeSeconds, yellowTimeSeconds, firstState), lightDirs) 
-        { 
+        public SimpleLight(string name, float redTimeSeconds, float greenTimeSeconds, ITrafficLight.State firstState = ITrafficLight.State.Off, IEnumerable<ITrafficLight.Dir>? lightDirs = null, float yellowTimeSeconds = 3f) : base(name, GetStateAndTime(redTimeSeconds, greenTimeSeconds, yellowTimeSeconds, firstState), lightDirs)
+        {
         }
-        public SimpleLight (string name, SimpleLight original, IEnumerable<ITrafficLight.Dir>? lightDirs = null) :base(name, original, lightDirs)
+        public SimpleLight(string name, SimpleLight original, IEnumerable<ITrafficLight.Dir>? lightDirs = null) : base(name, original, lightDirs)
         {
 
         }
