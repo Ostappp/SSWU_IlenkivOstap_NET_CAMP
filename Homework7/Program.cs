@@ -5,7 +5,7 @@ namespace Homework7
     internal class Program
     {
         static void Main(string[] args)
-        {
+        {// Хороша ідея працювати з групами світлофорів, але вона не до кінця реалізована, оскільки Ви не маєте змоги виконувати на рівні клієнтського класу одну дію над всією групою. Для цього треба було створити клас. а не просто список.
             Console.OutputEncoding = System.Text.Encoding.Unicode;
             SimpleLight NorthSouth = new SimpleLight("Північ-південь", 3f, 3f);
             SimpleLight SouthNorth = new SimpleLight("Південь-північ", 3f, 3f);
