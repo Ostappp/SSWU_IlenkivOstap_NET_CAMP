@@ -19,5 +19,16 @@ namespace Homework9
             _id = id;
             _offers = new (offers);
         }
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Order id:" + _id);
+            foreach (var offer in _offers)
+            {
+                sb.Append("\n\tName: " + offer.Key.Name + ". Count: " + offer.Value + $". Worked on dish [{offer.Key.WorkedOnDish.Count}]: " + string.Join("], [", offer.Key.WorkedOnDish)+"]");
+            }
+            return sb.ToString();
+        }
+
     }
 }

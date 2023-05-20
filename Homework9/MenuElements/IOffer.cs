@@ -1,11 +1,16 @@
 ﻿
+using Homework9.KitchenData.Staff;
+
 namespace Homework9.MenuElements
 {
     internal interface IOffer
     {
-        public string Name { get; }
-        public string Description { get; }
-        public Menu.OfferType OrderType { get; }
-        public decimal Price { get; }
+        string Name { get; }
+        string Description { get; }
+        Menu.OfferType OrderType { get; }
+        TimeOnly PrepearingTime { get; }
+        List<IStaff> WorkedOnDish { get; }
+        void AddCookToDish(IStaff staff);
+
     }
 }

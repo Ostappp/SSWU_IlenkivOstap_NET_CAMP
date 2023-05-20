@@ -1,6 +1,8 @@
-﻿namespace Homework9.MenuElements
+﻿using Homework9.KitchenData.Staff;
+
+namespace Homework9.MenuElements
 {
-    internal class Pizza : IDish
+    internal class Pizza : IOffer
     {
         private readonly string _name;
         public string Name { get { return _name; } }
@@ -12,24 +14,32 @@
         public string Description { get => _description; }
         public Menu.OfferType OrderType { get => Menu.OfferType.Pizza; }
 
-        private decimal _price;
-        public decimal Price { get => _price; }
 
         public PizzaSize Size { get; private set; }
 
-        private Dictionary<PizzaIngredients, uint> _ingredientsMeasuring;
-        public Dictionary<PizzaIngredients, uint> IngredientsMeasuring { get => new(_ingredientsMeasuring); }
+        private List<IStaff> _workedOnDish;
+        public List<IStaff> WorkedOnDish { get => _workedOnDish; }
 
-        public Pizza(string name, TimeOnly preparationTime, string description, decimal price, PizzaSize size, Dictionary<PizzaIngredients, uint> ingredientsMeasuring)
+        public void AddCookToDish(IStaff staff)
+        {
+            _workedOnDish.Add(staff);
+        }
+
+        //private Dictionary<PrepearingStage, float> _prepearingStagesTime;
+        //public Dictionary<PrepearingStage, float> PrepearingStagesTime { get => new(_prepearingStagesTime); }
+
+        public Pizza(string name, string description,  PizzaSize size/*, Dictionary<PrepearingStage, float> prepearingStagesTimeInMinutes*/)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException("Name can not be empty!");
 
-            if (price <= 0)
-                throw new ArgumentException("Price can not be negative!");
-
-            if (!ingredientsMeasuring.Any())
-                throw new ArgumentNullException("Ingredients measuring can not be empty!");
+            //if (!prepearingStagesTimeInMinutes.Any())
+            //    throw new ArgumentNullException("Ingredients measuring can not be empty!");
+            //foreach (float time in prepearingStagesTimeInMinutes.Values)
+            //{
+            //    if (time <= 0)
+            //        throw new ArgumentException("time can not be less than 0");
+            //}
 
             _name = name;
 
@@ -37,16 +47,20 @@
                 _description = string.Empty;
             else
                 _description = description;
+            //float totalTime = prepearingStagesTimeInMinutes.Values.Sum();
+            //_prepearingTime = new TimeOnly((int)totalTime / 60, (int)totalTime - ((int)totalTime / 60));            
 
-            _prepearingTime = new TimeOnly(preparationTime.Hour, preparationTime.Minute, preparationTime.Second);
-            _price = price;
+            //_prepearingStagesTime = prepearingStagesTimeInMinutes.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
+            
             Size = size;
-            _ingredientsMeasuring = ingredientsMeasuring;
+            _prepearingTime = new TimeOnly(0, 20);
+            _workedOnDish = new List<IStaff> { };
         }
-
-        public enum PizzaIngredients
+        public enum PrepearingStage
         {
-
+            PizzaBase,
+            Filling,
+            Baking
         }
         public enum PizzaSize
         {
@@ -55,5 +69,6 @@
             Large,
             ExtraLarge
         }
+
     }
 }
