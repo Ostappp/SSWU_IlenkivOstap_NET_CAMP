@@ -7,4 +7,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Task2\tmp\" />
+  </ItemGroup>
+
 </Project>
