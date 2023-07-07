@@ -1,0 +1,280 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ComputerStoreModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="CategorySet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="ItemParamsSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Height" Type="float" Nullable="false" />
+          <Property Name="Width" Type="float" Nullable="false" />
+          <Property Name="Depth" Type="float" Nullable="false" />
+          <Property Name="Weight" Type="float" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ItemSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Price" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="SerialNum" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="DateOfManufaturer" Type="datetime" Nullable="false" />
+          <Property Name="CategoryId" Type="int" Nullable="false" />
+          <Property Name="ManufacturerId" Type="int" Nullable="false" />
+          <Property Name="ItemParams_Id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ManufacturerSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="WEB_Site_Link" Type="nvarchar(max)" />
+          <Property Name="Country" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_CategoryItem">
+          <End Role="CategorySet" Type="Self.CategorySet" Multiplicity="1" />
+          <End Role="ItemSet" Type="Self.ItemSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CategorySet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ItemSet">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ItemItemParams">
+          <End Role="ItemParamsSet" Type="Self.ItemParamsSet" Multiplicity="1" />
+          <End Role="ItemSet" Type="Self.ItemSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ItemParamsSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ItemSet">
+              <PropertyRef Name="ItemParams_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ManufacturerItem">
+          <End Role="ManufacturerSet" Type="Self.ManufacturerSet" Multiplicity="1" />
+          <End Role="ItemSet" Type="Self.ItemSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ManufacturerSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ItemSet">
+              <PropertyRef Name="ManufacturerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ComputerStoreModelStoreContainer">
+          <EntitySet Name="CategorySet" EntityType="Self.CategorySet" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ItemParamsSet" EntityType="Self.ItemParamsSet" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ItemSet" EntityType="Self.ItemSet" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ManufacturerSet" EntityType="Self.ManufacturerSet" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_CategoryItem" Association="Self.FK_CategoryItem">
+            <End Role="CategorySet" EntitySet="CategorySet" />
+            <End Role="ItemSet" EntitySet="ItemSet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ItemItemParams" Association="Self.FK_ItemItemParams">
+            <End Role="ItemParamsSet" EntitySet="ItemParamsSet" />
+            <End Role="ItemSet" EntitySet="ItemSet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ManufacturerItem" Association="Self.FK_ManufacturerItem">
+            <End Role="ManufacturerSet" EntitySet="ManufacturerSet" />
+            <End Role="ItemSet" EntitySet="ItemSet" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="ComputerStoreModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="ComputerStoreModelContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ItemSet" EntityType="ComputerStoreModel.Item" />
+          <EntitySet Name="CategorySet" EntityType="ComputerStoreModel.Category" />
+          <EntitySet Name="ManufacturerSet" EntityType="ComputerStoreModel.Manufacturer" />
+          <EntitySet Name="ItemParamsSet" EntityType="ComputerStoreModel.ItemParams" />
+          <AssociationSet Name="CategoryItem" Association="ComputerStoreModel.CategoryItem">
+            <End Role="Category" EntitySet="CategorySet" />
+            <End Role="Item" EntitySet="ItemSet" />
+          </AssociationSet>
+          <AssociationSet Name="ItemItemParams" Association="ComputerStoreModel.ItemItemParams">
+            <End Role="Item" EntitySet="ItemSet" />
+            <End Role="ItemParams" EntitySet="ItemParamsSet" />
+          </AssociationSet>
+          <AssociationSet Name="ManufacturerItem" Association="ComputerStoreModel.ManufacturerItem">
+            <End Role="Manufacturer" EntitySet="ManufacturerSet" />
+            <End Role="Item" EntitySet="ItemSet" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Item">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Description" Type="String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Price" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="SerialNum" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="DateOfManufaturer" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Category" Relationship="ComputerStoreModel.CategoryItem" FromRole="Item" ToRole="Category" />
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ItemParams" Relationship="ComputerStoreModel.ItemItemParams" FromRole="Item" ToRole="ItemParams" />
+          <NavigationProperty Name="Manufacturer" Relationship="ComputerStoreModel.ManufacturerItem" FromRole="Item" ToRole="Manufacturer" />
+          <Property Name="ManufacturerId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Description" Type="String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Item" Relationship="ComputerStoreModel.CategoryItem" FromRole="Category" ToRole="Item" />
+        </EntityType>
+        <EntityType Name="Manufacturer">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="WEB_Site_Link" Type="String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Country" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Item" Relationship="ComputerStoreModel.ManufacturerItem" FromRole="Manufacturer" ToRole="Item" />
+        </EntityType>
+        <EntityType Name="ItemParams">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Height" Type="Double" Nullable="false" />
+          <Property Name="Width" Type="Double" Nullable="false" />
+          <Property Name="Depth" Type="Double" Nullable="false" />
+          <Property Name="Weight" Type="Double" Nullable="false" />
+          <NavigationProperty Name="Item" Relationship="ComputerStoreModel.ItemItemParams" FromRole="ItemParams" ToRole="Item" />
+        </EntityType>
+        <Association Name="CategoryItem">
+          <End Type="ComputerStoreModel.Category" Role="Category" Multiplicity="1" />
+          <End Type="ComputerStoreModel.Item" Role="Item" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Item">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ItemItemParams">
+          <End Type="ComputerStoreModel.Item" Role="Item" Multiplicity="1" />
+          <End Type="ComputerStoreModel.ItemParams" Role="ItemParams" Multiplicity="1" />
+        </Association>
+        <Association Name="ManufacturerItem">
+          <End Type="ComputerStoreModel.Manufacturer" Role="Manufacturer" Multiplicity="1" />
+          <End Type="ComputerStoreModel.Item" Role="Item" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Manufacturer">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Item">
+              <PropertyRef Name="ManufacturerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="ComputerStoreModelStoreContainer" CdmEntityContainer="ComputerStoreModelContainer">
+    <EntitySetMapping Name="ItemSet">
+      <EntityTypeMapping TypeName="IsTypeOf(ComputerStoreModel.Item)">
+        <MappingFragment StoreEntitySet="ItemSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="SerialNum" ColumnName="SerialNum" />
+          <ScalarProperty Name="DateOfManufaturer" ColumnName="DateOfManufaturer" />
+          <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+          <ScalarProperty Name="ManufacturerId" ColumnName="ManufacturerId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CategorySet">
+      <EntityTypeMapping TypeName="IsTypeOf(ComputerStoreModel.Category)">
+        <MappingFragment StoreEntitySet="CategorySet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ManufacturerSet">
+      <EntityTypeMapping TypeName="IsTypeOf(ComputerStoreModel.Manufacturer)">
+        <MappingFragment StoreEntitySet="ManufacturerSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="WEB_Site_Link" ColumnName="WEB_Site_Link" />
+          <ScalarProperty Name="Country" ColumnName="Country" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ItemParamsSet">
+      <EntityTypeMapping TypeName="IsTypeOf(ComputerStoreModel.ItemParams)">
+        <MappingFragment StoreEntitySet="ItemParamsSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Height" ColumnName="Height" />
+          <ScalarProperty Name="Width" ColumnName="Width" />
+          <ScalarProperty Name="Depth" ColumnName="Depth" />
+          <ScalarProperty Name="Weight" ColumnName="Weight" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="ItemItemParams" TypeName="ComputerStoreModel.ItemItemParams" StoreEntitySet="ItemSet">
+      <EndProperty Name="ItemParams">
+        <ScalarProperty Name="Id" ColumnName="ItemParams_Id" />
+      </EndProperty>
+      <EndProperty Name="Item">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
