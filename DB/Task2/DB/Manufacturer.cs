@@ -11,7 +11,8 @@ namespace Task2.DB
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.Text;
+
     public partial class Manufacturer
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -27,5 +28,17 @@ namespace Task2.DB
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Item> Item { get; set; }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine($"ID: {Id}");
+            sb.AppendLine($"Name: {Name}");
+            sb.AppendLine($"WEB Site Link: {WEB_Site_Link}");
+            sb.AppendLine($"Country: {Country}");
+
+            return sb.ToString();
+        }
     }
 }

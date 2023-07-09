@@ -11,7 +11,8 @@ namespace Task2.DB
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.Text;
+
     public partial class ItemParams
     {
         public int Id { get; set; }
@@ -21,5 +22,18 @@ namespace Task2.DB
         public double Weight { get; set; }
     
         public virtual Item Item { get; set; }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine($"ID: {Id}");
+            sb.AppendLine($"Height: {Height}");
+            sb.AppendLine($"Width: {Width}");
+            sb.AppendLine($"Depth: {Depth}");
+            sb.AppendLine($"Weight: {Weight}");
+
+            return sb.ToString();
+        }
     }
 }

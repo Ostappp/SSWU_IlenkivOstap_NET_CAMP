@@ -1,0 +1,18 @@
+﻿Info about description of commands:
+	In triangle brackects (<>) contains pareameters of specific command.
+	Some commands cam be executed only when required table selected.
+
+Command Line Interface (CLI) contains following commands:
+--Commands that don't need DB Table--
+	close - stops work of CLI.
+	info - shows this text.
+	get_tables - displays all awailable DB Tables.
+	select_table <table_name> - selects table with which the following commands will be executed.
+
+--Commands that need DB Table--
+	create - calls process for creating a row in table. 
+After that displays all elements of row to fill them.
+	read - show all items ID.
+	read <id> - show information about specific element.
+	update <id> - updates specific element.
+	delete <id> - deletes specific element.

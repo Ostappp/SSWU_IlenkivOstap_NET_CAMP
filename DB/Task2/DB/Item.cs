@@ -11,7 +11,8 @@ namespace Task2.DB
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.Text;
+
     public partial class Item
     {
         public int Id { get; set; }
@@ -26,5 +27,22 @@ namespace Task2.DB
         public virtual Category Category { get; set; }
         public virtual ItemParams ItemParams { get; set; }
         public virtual Manufacturer Manufacturer { get; set; }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine($"ID: {Id}");
+            sb.AppendLine($"Name: {Name}");
+            sb.AppendLine($"Description: {Description}");
+            sb.AppendLine($"Price: {Price}");
+            sb.AppendLine($"Serial number: {SerialNum}");
+            sb.AppendLine($"Date of manufaturer: {DateOfManufaturer}");
+            sb.AppendLine($"Category id: {CategoryId}");
+            sb.AppendLine($"Manufacturer id: {ManufacturerId}");
+            sb.AppendLine($"ItemParams id: {ItemParams.Id}");
+
+            return sb.ToString();
+        }
     }
 }

@@ -11,9 +11,9 @@ namespace Task2
         static void Main(string[] args)
         {
             DBAdapter adapter = new DBAdapter();
-            adapter.RefillComputerStoreDB();
-            CLI CLI = new CLI();
-            CLI.Start();
+            //adapter.RefillComputerStoreDB();
+            CLI CLI = new CLI(adapter);
+            CLI.OpenCLI();
         }
     }
 }
